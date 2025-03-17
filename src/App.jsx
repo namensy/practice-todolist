@@ -42,9 +42,7 @@ function App() {
   };
   
   useEffect(() => {
-    if (todosList.length > 0) {
       localStorage.setItem('todos', JSON.stringify(todosList))
-    }
   }, [todosList])
   
   useEffect(() => {    
