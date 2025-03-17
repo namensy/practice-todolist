@@ -1,25 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 
-const Search = ({ setTodos, setTodosList, todos, todosList }) => {
-  const handleAdd = (e) => {
-    setTodosList([...todosList, todos]);
-    setTodos("");
-  };
-
+const Search = ({
+  setTodos,
+  todos,
+  checked,
+  handleChange,
+  handleAdd,
+  selectedIndex,
+}) => {
   return (
     <>
       <input
-        className="w-full text-white bg-[#1F1F1F] outline-none px-4 py-3 rounded-lg"
+        className="flex-1/2 text-white bg-[#1F1F1F] block outline-none px-5 py-7 text-lg"
         type="text"
         placeholder="Add task .."
         onChange={(e) => setTodos(e.target.value)}
-        value={todos}
+        value={todos || ""}
       />
       <button
-        className="text-white p-5 rounded-lg bg-[#1F1F1F]"
-        onClick={(e) => handleAdd(e)}
+        className="text-white bg-[#a21dd6] block px-[70px] rounded-l-4xl py-7 -ml-6 cursor-pointer text-lg"
+        onClick={() => {
+          checked ? handleChange(selectedIndex) : handleAdd();
+        }}
       >
-        Add
+        {checked ? "Edit" : "Add"}
       </button>
     </>
   );

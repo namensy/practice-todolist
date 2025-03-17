@@ -4,37 +4,71 @@ import Search from "./components/Search";
 
 function App() {
   const [todos, setTodos] = useState("");
-  const [todosList, setTodosList] = useState([]);
-
+  const [checked, setChecked] = useState(false);
+  const [todosList, setTodosList] = useState(JSON.parse(localStorage.getItem('todos')) || []);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  
+  const handleAdd = () => {
+    if (todos !== "") {
+      setTodosList([...todosList, todos]);
+      setTodos("");
+    }
+  };
+  
   const handleDelete = (index) => {
     // เราไปเปลี่ยนค่า React State โดยตรง ทำให้ React ไม่รู้ว่าโค้ดมีการเปลี่ยนแปลงเพราะ Reference ของ todosList เป็นอันเดิม
     // todosList.splice(index, 1);
     // setTodosList(todosList);
-
+    
     const newTodo = [...todosList];
     newTodo.splice(index, 1);
     setTodosList(newTodo);
   };
-
-  const handleEdit = (index, task) => {
-    // ทำ Edit ยังไง เวลาเราคลิกที่ปุ่ม ละ Cursor ไปอยู๋ตรงที่พิม input จากนั้นกด Enter เราจะเป็นการแก้ไข Todo นั้นๆทันที
-    const newEdit = [...todosList];
-    console.log(task);
-    // ทำการกด Edit ละช่องกับไป Focus ที่ข้อความ
-    setTodos(newEdit[index]);
-    // จากนั้นเราต้องรับค่าจาก input ที่ user ใส่กลับมา update ใน state หรือข้อความนั้นๆ
+  
+  const handleEdit = (index) => {
+    const updatedTodoList = [...todosList];
+    if (checked) {
+      updatedTodoList[index] = todos;
+      setTodosList(updatedTodoList);
+      setChecked(false);
+    }
   };
-
+  
+  const handleChange = (index) => {
+    setChecked(true);
+    setTodos(todosList[index]);
+    setSelectedIndex(index);
+    handleEdit(index);
+  };
+  
+  useEffect(() => {
+    if (todosList.length > 0) {
+      localStorage.setItem('todos', JSON.stringify(todosList))
+    }
+  }, [todosList])
+  
+  useEffect(() => {    
+    const storedTodo = localStorage.getItem('todos')
+    if (storedTodo) {
+      setTodosList(JSON.parse(storedTodo))
+    } else {
+      setTodosList([])
+    }
+  }, [])
+  
+  
   return (
     <>
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-gradient text-3xl font-bold">Todo List</h1>
-        <div className="flex gap-2 p-2 m-10 h-[80px]">
+      <div className="max-w-[850px] mx-auto">
+        <h1 className="text-gradient text-5xl font-bold text-center mt-[100px] select-none">Todo List</h1>
+        <div className="flex my-[40px] items-center overflow-hidden rounded-4xl">
           <Search
             setTodos={setTodos}
-            setTodosList={setTodosList}
             todos={todos}
-            todosList={todosList}
+            checked={checked}
+            handleChange={handleChange}
+            handleAdd={handleAdd}
+            selectedIndex={selectedIndex}
           />
         </div>
         <ul>
@@ -44,17 +78,17 @@ function App() {
                 key={index}
                 className="flex justify-between items-center text-white p-8 mt-5 bg-purple-950 rounded-3xl"
               >
-                <p>{task}</p>
-                <div className="flex gap-2">
+                <p className="text-2xl select-none">{task}</p>
+                <div className="flex gap-3 items-center">
                   <img
-                    onClick={() => handleEdit(index)}
-                    className="w-8 h-8"
+                    onClick={() => handleChange(index)}
+                    className="w-8 hover:scale-[1.2] transition-transform cursor-pointer select-none"
                     src="/edit.png"
                     alt="edit"
                   />
                   <img
-                    onClick={() => handleDelete(index, task)}
-                    className="w-8 h-8"
+                    onClick={() => handleDelete(index)}
+                    className="w-8 h-7 hover:scale-[1.2]  transition-transform cursor-pointer select-none"
                     src="/bin.png"
                     alt="bin"
                   />
