@@ -58,16 +58,9 @@ function App() {
   return (
     <>
       <div className="max-w-[850px] mx-auto">
-        <h1 className="text-gradient text-5xl font-bold text-center mt-[100px] select-none">Todo List</h1>
+        <h1 className="text-gradient text-5xl font-bold text-center mt-[100px] select-none">To-do List</h1>
         <div className="flex my-[40px] items-center overflow-hidden rounded-4xl">
-          <Search
-            setTodos={setTodos}
-            todos={todos}
-            checked={checked}
-            handleChange={handleChange}
-            handleAdd={handleAdd}
-            selectedIndex={selectedIndex}
-          />
+          <Search setTodos={setTodos} setTodosList={setTodosList} todos={todos} todosList={todosList} checked={checked} handleChange={handleChange} handleAdd={handleAdd} selectedIndex={selectedIndex}/>
         </div>
         <ul>
           {todosList &&
